@@ -23,7 +23,7 @@ RUN /tmp/scripts/assemble
 
 USER root
 
-RUN jupyter contrib nbextension install
+#RUN jupyter contrib nbextension install
 
 USER 1001
 

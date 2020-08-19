@@ -55,10 +55,10 @@ mv /tmp/src/*.sh /opt/app-root/bin
 
 # Install oc command line client for OpenShift cluster.
 
-#curl -s -o /tmp/oc.tar.gz https://mirror.openshift.com/pub/openshift-v3/clients/3.11.153/linux/oc.tar.gz && \
-#    tar -C /opt/app-root/bin -zxf /tmp/oc.tar.gz oc && \
-#    mv /opt/app-root/bin/oc /opt/app-root/bin/oc-3.11 && \
-#    rm /tmp/oc.tar.gz
+curl -s -o /tmp/oc.tar.gz https://mirror.openshift.com/pub/openshift-v3/clients/3.11.153/linux/oc.tar.gz && \
+    tar -C /opt/app-root/bin -zxf /tmp/oc.tar.gz oc && \
+    mv /opt/app-root/bin/oc /opt/app-root/bin/oc-3.11 && \
+    rm /tmp/oc.tar.gz
 
 #curl -s -o /tmp/oc.tar.gz https://mirror.openshift.com/pub/openshift-v3/clients/4.0.22/linux/oc.tar.gz && \
 #    tar -C /opt/app-root/bin -zxf /tmp/oc.tar.gz oc && \
@@ -75,9 +75,9 @@ mv /tmp/src/*.sh /opt/app-root/bin
 #    mv /opt/app-root/bin/oc /opt/app-root/bin/oc-4.2 && \
 #    rm /tmp/oc.tar.gz
 
-curl -s -o /tmp/oc.tar.gz https://mirror.openshift.com/pub/openshift-v4/clients/oc/4.3/linux/oc.tar.gz && \
+curl -s -o /tmp/oc.tar.gz https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz && \
     tar -C /opt/app-root/bin -zxf /tmp/oc.tar.gz oc && \
-    mv /opt/app-root/bin/oc /opt/app-root/bin/oc-4.3 && \
+    mv /opt/app-root/bin/oc /opt/app-root/bin/oc-4 && \
     rm /tmp/oc.tar.gz
 
 ln -s /opt/app-root/bin/oc-wrapper.sh /opt/app-root/bin/oc
@@ -119,18 +119,19 @@ EOF
 
 rm -rf /tmp/src
 
-curl https://bootstrap.pypa.io/get-pip.py > get-pip.py
-python2 get-pip.py
-rm -f get-pip.py
-python2 -m pip install ipykernel arrow pyarrow pytest networkx
-python2 -m ipykernel install --user
-pip install jupyter_contrib_nbextensions
+#curl https://bootstrap.pypa.io/get-pip.py > get-pip.py
+#python2 get-pip.py
+#rm -f get-pip.py
+#python2 -m pip install ipykernel arrow pyarrow pytest networkx
+#python2 -m ipykernel install --user
+#pip install jupyter_contrib_nbextensions
 
-mkdir .virtual
-virtualenv -p python3 .virtual/livy
-source .virtual/livy/bin/activate
+mkdir /opt/app-root/share/.virtual
+virtualenv -p python3 /opt/app-root/share/.virtual/livy
+source /opt/app-root/share/.virtual/livy/bin/activate
 pip install ipykernel
 python -m ipykernel install --user --name livy --display-name "Python 3(livy)"
+cp -R .local/share/jupyter/kernels/* /opt/app-root/share/jupyter/kernels/
 pip install -U livy arrow pyarrow pytest prospector networkx
 
 
