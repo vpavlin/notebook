@@ -1,0 +1,4 @@
+JULIA_VERSION=1.5.0
+JULIA_DEPOT_PATH=/opt/app-root/share/julia
+JULIA_PKGDIR=/opt/app-root/share/julia
+JUPYTER=jupyter

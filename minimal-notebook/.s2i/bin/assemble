@@ -114,11 +114,6 @@ cat >> /opt/app-root/etc/supervisord.conf << EOF
 files = /opt/app-root/etc/supervisor/*.conf
 EOF
 
-# Make sure the S2I source directory is empty as we will use the image
-# produced to run further S2I builds.
-
-rm -rf /tmp/src
-
 #curl https://bootstrap.pypa.io/get-pip.py > get-pip.py
 #python2 get-pip.py
 #rm -f get-pip.py
@@ -126,15 +121,25 @@ rm -rf /tmp/src
 #python2 -m ipykernel install --user
 #pip install jupyter_contrib_nbextensions
 
-mkdir /opt/app-root/share/.virtual
-virtualenv -p python3 /opt/app-root/share/.virtual/livy
-source /opt/app-root/share/.virtual/livy/bin/activate
-pip install ipykernel
-python -m ipykernel install --user --name livy --display-name "Python 3(livy)"
-cp -R .local/share/jupyter/kernels/* /opt/app-root/share/jupyter/kernels/
-pip install -U livy arrow pyarrow pytest prospector networkx
 
+if [ -e "/tmp/src/kernels" ]; then
+    mkdir -p /opt/app-root/share/.virtual
+    pushd /opt/app-root/share/
+    for kernel in `ls -d /tmp/src/kernels/* | grep -v bin`; do
+        install_cmd=/tmp/src/kernels/bin/install.sh
+        if [ -e "${kernel}/install.sh" ]; then
+            install_cmd=${kernel}/install.sh
+        fi
+        [ -e "${kernel}/env" ] && cat ${kernel}/env | sed 's/^/export /' >> /opt/app-root/etc/scl_enable
+        kernel_path=${kernel} bash ${install_cmd}
+    done
+    popd
+fi
 
+# Make sure the S2I source directory is empty as we will use the image
+# produced to run further S2I builds.
+
+rm -rf /tmp/src
 
 
 
